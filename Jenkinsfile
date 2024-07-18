@@ -49,9 +49,11 @@ pipeline {
             steps {
                 script {
                     // Tag the Docker image for ECR Public
-                    sh "docker tag ${APP_NAME}:${IMAGE_TAG} ${ECR_REPO_URL}/${APP_NAME}:${IMAGE_TAG}"
+                    // sh "docker tag ${APP_NAME}:${IMAGE_TAG} ${ECR_REPO_URL}/${APP_NAME}:${IMAGE_TAG}"
+                    sh "docker tag ${APP_NAME}:${IMAGE_TAG} ${ECR_REPO_URL}:${IMAGE_TAG}"
                     // Push the Docker image to ECR Public
-                    sh "docker push ${ECR_REPO_URL}/${APP_NAME}:${IMAGE_TAG}"
+                    // sh "docker push ${ECR_REPO_URL}/${APP_NAME}:${IMAGE_TAG}"
+                    sh "docker push ${ECR_REPO_URL}:${IMAGE_TAG}"
                 }
             }
         }
