@@ -27,7 +27,8 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 script {
-                    docker.build("${ECR_REPO_URL}/${APP_NAME}:${IMAGE_TAG}")
+                    // docker.build("${ECR_REPO_URL}/${APP_NAME}:${IMAGE_TAG}")
+                    docker.build("${APP_NAME}:${IMAGE_TAG}")
                 }
             }
         }
