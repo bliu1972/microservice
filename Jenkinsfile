@@ -2,24 +2,26 @@ pipeline {
     agent any
 
     environment {
-        AWS_DEFAULT_REGION = 'us-east-1'
+        AWS_DEFAULT_REGION = 'us-east-1' // Update to your AWS region
         ECR_REPO_URL = 'public.ecr.aws/microservice' // Update with your public ECR repository URL
         IMAGE_TAG = "${env.BUILD_ID}"
         APP_NAME = 'mymicroservice'
-        ENV_NAME = 'Mymicroservice-env'
+        GIT_REPO_URL = 'git@github.com:bliu1972/microservice.git' // Update with your repository URL
     }
 
     stages {
         stage('Checkout') {
             steps {
-                git branch: 'main', url: 'git@github.com:bliu1972/microservice.git'
+                // Checkout the code from GitHub
+                git branch: 'main', url: "${GIT_REPO_URL}"
             }
         }
 
         stage('Build with Maven') {
             steps {
                 script {
-                    sh "mvn clean package -Pskip-tests"
+                    // Build the Maven project
+                    sh "mvn clean package -DskipTests"
                 }
             }
         }
@@ -27,8 +29,8 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 script {
-                    // docker.build("${ECR_REPO_URL}/${APP_NAME}:${IMAGE_TAG}")
-                    docker.build("${APP_NAME}:${IMAGE_TAG}")
+                    // Build Docker image with a tag based on build ID
+                    docker.build("${ECR_REPO_URL}/${APP_NAME}:${IMAGE_TAG}")
                 }
             }
         }
@@ -36,28 +38,29 @@ pipeline {
         stage('Login to AWS ECR Public') {
             steps {
                 script {
+                    // Login to AWS ECR Public
                     sh "aws ecr-public get-login-password --region ${AWS_DEFAULT_REGION} | docker login --username AWS --password-stdin public.ecr.aws"
                 }
             }
         }
 
-        stage('Push Docker Image to ECR Public') {
+        stage('Tag and Push Docker Image') {
             steps {
                 script {
+                    // Tag the Docker image for ECR Public
                     sh "docker tag ${APP_NAME}:${IMAGE_TAG} ${ECR_REPO_URL}/${APP_NAME}:${IMAGE_TAG}"
-                    // sh "docker push ${ECR_REPO_URL}/${APP_NAME}:${IMAGE_TAG}"
-                    sh "docker push ${ECR_REPO_URL}:${IMAGE_TAG}"
+                    // Push the Docker image to ECR Public
+                    sh "docker push ${ECR_REPO_URL}/${APP_NAME}:${IMAGE_TAG}"
                 }
             }
         }
 
-        stage('Deploy to Elastic Beanstalk') {
+        stage('Deploy') {
             steps {
                 script {
-                    sh """
-                    aws elasticbeanstalk create-application-version --application-name ${APP_NAME} --version-label ${IMAGE_TAG} --source-bundle S3Bucket="${AWS_ACCOUNT_ID}-elasticbeanstalk-s3-bucket",S3Key="docker/${APP_NAME}:${IMAGE_TAG}"
-                    aws elasticbeanstalk update-environment --application-name ${APP_NAME} --environment-name ${ENV_NAME} --version-label ${IMAGE_TAG}
-                    """
+                    // Here, you would include deployment steps such as updating Elastic Beanstalk
+                    // Replace with appropriate deployment commands or scripts
+                    echo "Deployment steps would go here."
                 }
             }
         }
@@ -65,6 +68,7 @@ pipeline {
 
     post {
         always {
+            // Clean workspace after the build
             cleanWs()
         }
     }
