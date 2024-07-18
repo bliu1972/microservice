@@ -35,8 +35,7 @@ pipeline {
         stage('Login to AWS ECR Public') {
             steps {
                 script {
-                    // Log in to AWS ECR Public
-                    sh "aws ecr-public login --region ${AWS_DEFAULT_REGION}"
+                    sh "aws ecr-public get-login-password --region ${AWS_DEFAULT_REGION} | docker login --username AWS --password-stdin public.ecr.aws"
                 }
             }
         }
@@ -44,7 +43,6 @@ pipeline {
         stage('Push Docker Image to ECR Public') {
             steps {
                 script {
-                    // Tag and push the Docker image to public ECR
                     sh "docker tag ${APP_NAME}:${IMAGE_TAG} ${ECR_REPO_URL}/${APP_NAME}:${IMAGE_TAG}"
                     sh "docker push ${ECR_REPO_URL}/${APP_NAME}:${IMAGE_TAG}"
                 }
@@ -54,7 +52,6 @@ pipeline {
         stage('Deploy to Elastic Beanstalk') {
             steps {
                 script {
-                    // Create a new application version and deploy to Elastic Beanstalk
                     sh """
                     aws elasticbeanstalk create-application-version --application-name ${APP_NAME} --version-label ${IMAGE_TAG} --source-bundle S3Bucket="${AWS_ACCOUNT_ID}-elasticbeanstalk-s3-bucket",S3Key="docker/${APP_NAME}:${IMAGE_TAG}"
                     aws elasticbeanstalk update-environment --application-name ${APP_NAME} --environment-name ${ENV_NAME} --version-label ${IMAGE_TAG}
