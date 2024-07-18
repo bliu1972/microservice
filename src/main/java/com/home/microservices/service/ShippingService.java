@@ -1,4 +1,4 @@
-package com.home.microservices;
+package com.home.microservices.service;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,5 +33,4 @@ public class ShippingService {
 
         return shippingList;
     }
-    
 }
