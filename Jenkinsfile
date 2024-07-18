@@ -30,7 +30,8 @@ pipeline {
             steps {
                 script {
                     // Build Docker image with a tag based on build ID
-                    docker.build("${ECR_REPO_URL}/${APP_NAME}:${IMAGE_TAG}")
+                    // docker.build("${ECR_REPO_URL}/${APP_NAME}:${IMAGE_TAG}")
+                    docker.build("${APP_NAME}:${IMAGE_TAG}")
                 }
             }
         }
