@@ -5,8 +5,8 @@ FROM openjdk:11-jre-slim
 WORKDIR /app
 
 # Copy the jar file into the container at /app
-COPY target/my-app.jar /app/my-app.jar
+COPY target/microservices-0.0.1-SNAPSHOT.war /app/microservices-0.0.1.war
 
 # Run the jar file with a specific profile
-ENTRYPOINT ["java", "-jar", "/app/my-app.jar", "--spring.profiles.active=docker"]
+ENTRYPOINT ["java", "-jar", "/app/microservices-0.0.1.war", "--spring.profiles.active=docker"]
 
