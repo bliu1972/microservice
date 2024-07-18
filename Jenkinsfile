@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         AWS_DEFAULT_REGION = 'us-east-1' // Update to your AWS region
-        ECR_REPO_URL = 'public.ecr.aws/microservice' // Update with your public ECR repository URL
+        ECR_REPO_URL = 'public.ecr.aws/t4e5x6y4/microservice' // Update with your public ECR repository URL
         IMAGE_TAG = "${env.BUILD_ID}"
         APP_NAME = 'mymicroservice'
         GIT_REPO_URL = 'git@github.com:bliu1972/microservice.git' // Update with your repository URL
@@ -49,11 +49,9 @@ pipeline {
             steps {
                 script {
                     // Tag the Docker image for ECR Public
-                    // sh "docker tag ${APP_NAME}:${IMAGE_TAG} ${ECR_REPO_URL}/${APP_NAME}:${IMAGE_TAG}"
-                    sh "docker tag ${APP_NAME}:${IMAGE_TAG} ${ECR_REPO_URL}:${IMAGE_TAG}"
+                    sh "docker tag ${APP_NAME}:${IMAGE_TAG} ${ECR_REPO_URL}/${APP_NAME}:${IMAGE_TAG}"
                     // Push the Docker image to ECR Public
-                    // sh "docker push ${ECR_REPO_URL}/${APP_NAME}:${IMAGE_TAG}"
-                    sh "docker push ${ECR_REPO_URL}:${IMAGE_TAG}"
+                    sh "docker push ${ECR_REPO_URL}/${APP_NAME}:${IMAGE_TAG}"
                 }
             }
         }
