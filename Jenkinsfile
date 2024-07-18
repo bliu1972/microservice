@@ -4,7 +4,7 @@ pipeline {
     environment {
         AWS_ACCOUNT_ID = '058264367850'
         AWS_DEFAULT_REGION = 'us-east-1'
-        ECR_REPO_NAME = 'microservice'
+        ECR_REPO_NAME = 'public.ecr.aws/microservice'
         IMAGE_TAG = "${env.BUILD_ID}"
         APP_NAME = 'mymicroservice'
         ENV_NAME = 'Mymicroservice-env'
