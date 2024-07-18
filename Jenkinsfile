@@ -45,7 +45,8 @@ pipeline {
             steps {
                 script {
                     sh "docker tag ${APP_NAME}:${IMAGE_TAG} ${ECR_REPO_URL}/${APP_NAME}:${IMAGE_TAG}"
-                    sh "docker push ${ECR_REPO_URL}/${APP_NAME}:${IMAGE_TAG}"
+                    // sh "docker push ${ECR_REPO_URL}/${APP_NAME}:${IMAGE_TAG}"
+                    sh "docker push ${ECR_REPO_URL}:${IMAGE_TAG}"
                 }
             }
         }
