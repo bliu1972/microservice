@@ -17,6 +17,14 @@ pipeline {
             }
         }
 
+       stage('Build with Maven') {
+            steps {
+                script {
+                    sh "mvn clean package -Pskip-tests"
+                }
+            }
+        }
+
         stage('Build Docker Image') {
             steps {
                 script {
