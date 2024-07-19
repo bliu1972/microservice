@@ -57,10 +57,14 @@ pipeline {
                 }
             }
         }
-/*
+
         stage('Deploy to Elastic Beanstalk') {
             steps {
                 script {
+                    /*
+                     * Create a new application version in Elastic Beanstalk
+                     * Update the environment to use the new version
+                     */
                     sh """
                     aws elasticbeanstalk create-application-version --application-name ${APP_NAME} --version-label ${IMAGE_TAG} --source-bundle S3Bucket="${AWS_ACCOUNT_ID}-elasticbeanstalk-s3-bucket",S3Key="docker/${APP_NAME}:${IMAGE_TAG}"
                     aws elasticbeanstalk update-environment --application-name ${APP_NAME} --environment-name ${ENV_NAME} --version-label ${IMAGE_TAG}
@@ -68,13 +72,13 @@ pipeline {
                 }
             }
         }
-*/
     }
 
     post {
         always {
-            // Clean workspace after the build
-            cleanWs()
+            node {
+                cleanWs()
+            }
         }
     }
 }
