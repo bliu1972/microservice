@@ -10,6 +10,7 @@ pipeline {
         ENV_NAME = 'Mymicroservice-env'
         AWS_ACCOUNT_ID = '058264367850' // Ensure it's a string
         S3_BUCKET = 'elasticbeanstalk-us-east-1-058264367850'
+        S3_KEY = "docker/${APP_NAME}:${IMAGE_TAG}.tar"
     }
 
     stages {
@@ -58,6 +59,17 @@ pipeline {
             }
         }
 
+        stage('Upload Docker Image to S3') {
+            steps {
+                script {
+                    // Save the Docker image as a tar file
+                    sh "docker save ${ECR_REPO_URL}/${APP_NAME}:${IMAGE_TAG} -o ${APP_NAME}-${IMAGE_TAG}.tar"
+                    // Upload the tar file to S3
+                    sh "aws s3 cp ${APP_NAME}-${IMAGE_TAG}.tar s3://${S3_BUCKET}/${S3_KEY}"
+                }
+            }
+        }
+
         stage('Deploy to Elastic Beanstalk') {
             steps {
                 script {
@@ -66,7 +78,7 @@ pipeline {
                      * Update the environment to use the new version
                      */
                     sh """
-                    aws elasticbeanstalk create-application-version --application-name ${APP_NAME} --version-label ${IMAGE_TAG} --source-bundle S3Bucket="${S3_BUCKET}",S3Key="docker/${APP_NAME}:${IMAGE_TAG}"
+                    aws elasticbeanstalk create-application-version --application-name ${APP_NAME} --version-label ${IMAGE_TAG} --source-bundle S3Bucket="${S3_BUCKET}",S3Key="${S3_KEY}"
                     aws elasticbeanstalk update-environment --application-name ${APP_NAME} --environment-name ${ENV_NAME} --version-label ${IMAGE_TAG}
                     """
                 }
