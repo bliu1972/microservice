@@ -8,7 +8,7 @@ pipeline {
         APP_NAME = 'microservice'
         GIT_REPO_URL = 'git@github.com:bliu1972/microservice.git' // Update with your repository URL
         ENV_NAME = 'Mymicroservice-env'
-	AWS_ACCOUNT_ID=058264367850
+        AWS_ACCOUNT_ID = '058264367850' // Ensure it's a string
     }
 
     stages {
@@ -32,7 +32,6 @@ pipeline {
             steps {
                 script {
                     // Build Docker image with a tag based on build ID
-                    // docker.build("${ECR_REPO_URL}/${APP_NAME}:${IMAGE_TAG}")
                     docker.build("${APP_NAME}:${IMAGE_TAG}")
                 }
             }
@@ -76,10 +75,8 @@ pipeline {
 
     post {
         always {
-            script {
-                if (getContext(hudson.FilePath)) {
-                    cleanWs()
-                }
+            node {
+                cleanWs()
             }
         }
     }
