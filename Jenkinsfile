@@ -70,6 +70,18 @@ pipeline {
             }
         }
 
+        stage('Create Elastic Beanstalk Application') {
+            steps {
+                script {
+                    // Check if the application exists and create it if it doesn't
+                    def exists = sh(script: "aws elasticbeanstalk describe-applications --application-names ${APP_NAME} --query 'Applications[0]' --output text || echo 'false'", returnStdout: true).trim()
+                    if (exists == 'false') {
+                        sh "aws elasticbeanstalk create-application --application-name ${APP_NAME} --description 'Microservice application'"
+                    }
+                }
+            }
+        }
+
         stage('Deploy to Elastic Beanstalk') {
             steps {
                 script {
