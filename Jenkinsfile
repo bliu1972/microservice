@@ -7,6 +7,7 @@ pipeline {
         IMAGE_TAG = "${env.BUILD_ID}"
         APP_NAME = 'microservice'
         GIT_REPO_URL = 'git@github.com:bliu1972/microservice.git' // Update with your repository URL
+        ENV_NAME = 'Mymicroservice-env'
     }
 
     stages {
@@ -56,12 +57,17 @@ pipeline {
             }
         }
 
-        stage('Deploy') {
+        stage('Deploy to Elastic Beanstalk') {
             steps {
                 script {
-                    // Here, you would include deployment steps such as updating Elastic Beanstalk
-                    // Replace with appropriate deployment commands or scripts
-                    echo "Deployment steps would go here."
+                    /*
+                     * Create a new application version in Elastic Beanstalk
+                     * Update the environment to use the new version
+                     */
+                    sh """
+                    aws elasticbeanstalk create-application-version --application-name ${APP_NAME} --version-label ${IMAGE_TAG} --source-bundle S3Bucket="${AWS_ACCOUNT_ID}-elasticbeanstalk-s3-bucket",S3Key="docker/${APP_NAME}:${IMAGE_TAG}"
+                    aws elasticbeanstalk update-environment --application-name ${APP_NAME} --environment-name ${ENV_NAME} --version-label ${IMAGE_TAG}
+                    """
                 }
             }
         }
