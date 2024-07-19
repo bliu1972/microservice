@@ -76,7 +76,9 @@ pipeline {
 
     post {
         always {
-            node {
+            // Clean workspace on any available agent
+            agent any
+            steps {
                 cleanWs()
             }
         }
