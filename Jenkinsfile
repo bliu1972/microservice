@@ -9,6 +9,7 @@ pipeline {
         GIT_REPO_URL = 'git@github.com:bliu1972/microservice.git' // Update with your repository URL
         ENV_NAME = 'Mymicroservice-env'
         AWS_ACCOUNT_ID = '058264367850' // Ensure it's a string
+        S3_BUCKET = 'elasticbeanstalk-us-east-1-058264367850'
     }
 
     stages {
@@ -65,7 +66,7 @@ pipeline {
                      * Update the environment to use the new version
                      */
                     sh """
-                    aws elasticbeanstalk create-application-version --application-name ${APP_NAME} --version-label ${IMAGE_TAG} --source-bundle S3Bucket="${AWS_ACCOUNT_ID}-elasticbeanstalk-s3-bucket",S3Key="docker/${APP_NAME}:${IMAGE_TAG}"
+                    aws elasticbeanstalk create-application-version --application-name ${APP_NAME} --version-label ${IMAGE_TAG} --source-bundle S3Bucket="${S3_BUCKET}",S3Key="docker/${APP_NAME}:${IMAGE_TAG}"
                     aws elasticbeanstalk update-environment --application-name ${APP_NAME} --environment-name ${ENV_NAME} --version-label ${IMAGE_TAG}
                     """
                 }
