@@ -76,7 +76,11 @@ pipeline {
 
     post {
         always {
-            cleanWs()
+            script {
+                if (getContext(hudson.FilePath)) {
+                    cleanWs()
+                }
+            }
         }
     }
 }
