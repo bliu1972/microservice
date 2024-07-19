@@ -7,7 +7,7 @@ pipeline {
         IMAGE_TAG = "${env.BUILD_ID}"
         APP_NAME = 'microservice'
         GIT_REPO_URL = 'git@github.com:bliu1972/microservice.git' // Update with your repository URL
-        ENV_NAME = 'Mymicroservice-env'
+        ENV_NAME = 'Microservice-env'
         AWS_ACCOUNT_ID = '058264367850' // Ensure it's a string
         S3_BUCKET = 'elasticbeanstalk-us-east-1-058264367850'
         S3_KEY = "docker/${APP_NAME}:${IMAGE_TAG}.tar"
